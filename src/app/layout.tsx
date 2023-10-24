@@ -17,15 +17,20 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // envolvi minha aplicação em uma div h-full e coloquei o conteudo entre header e footer para ficar no meio 
+  // esse flex-1 ocupa todo o espaço que sobra
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider>
-          <Header/>
-          {children}
-
-          <Footer/>
-        </AuthProvider>
+        <div className='flex flex-col h-full'>
+          <AuthProvider>
+            <Header/>
+              <div className="flex-1">
+                {children}
+              </div>
+            <Footer/>
+          </AuthProvider>
+        </div>
 
         </body>
     </html>
