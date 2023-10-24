@@ -9,7 +9,7 @@ const Categories = async () => {
     // Aqui eu to pegando as categorias que eu recebo to dando um map em todas e passando para meu componente 
     // o id de a categoria deles e la eu acesso o name de cada 
     return ( 
-        <div className="grid grid-col-2 gap-y-2 gap-x-4">
+        <div className="grid grid-cols-2 gap-y-2 gap-x-4">
             {categories.map(category => <CategoryItem key={category.id} category={category}/>)}
         </div>
      );

@@ -2,7 +2,7 @@ import { Product } from "@prisma/client";
 
 // aqui quer dizer que agora Product vai ter a propriedade de total price tipo eu to juntando para que ProductwhitTotalPrice
 // tenha tudo que product tem mais o que foi adicionado que seria o total price
-interface ProductwhitTotalPrice extends Product{
+export interface ProductwhitTotalPrice extends Product{
     totalPrice: number;
 }
 
@@ -15,8 +15,8 @@ export const computProductTotalPrice = (product: Product): ProductwhitTotalPrice
         }
     }
 
-    const totalPrice = Number(product.basePrice) * (product.discountPercentage / 100)
-
+    const priceDiscount = Number(product.basePrice) * (product.discountPercentage / 100)
+    const totalPrice = Number(product.basePrice) - priceDiscount
     return{
         ...product,
         totalPrice
