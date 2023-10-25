@@ -1,6 +1,5 @@
 import { prismaClient } from "@/lib/prisma";
 import { Badge} from "@/components/ui/badge";
-import { ShapesIcon } from "lucide-react";
 import ProductItem from "@/components/product-item";
 import { computProductTotalPrice } from "@/helpers/product";
 import { CATEGORY_ICON } from "@/constants/category-icon";
