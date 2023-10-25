@@ -4,23 +4,18 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import DiscountBadge from "@/components/ui/discount-badge";
 import { ProductwhitTotalPrice } from "@/helpers/product";
+import { CartContext } from "@/provider/cart";
+import { Product } from "@prisma/client";
 import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, TruckIcon } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 // aqui eu digo que o pick vai pegar apenas esse campos que eu mencionei
 interface ProductInfoProps {
-    product : Pick<
-        ProductwhitTotalPrice,
-        "basePrice"
-        | "description"
-        | "discountPercentage"
-        | "totalPrice"
-        | "name"
-    >
+    product : ProductwhitTotalPrice
 }
 
 
-const ProductInfo = ({product:{basePrice,totalPrice,description,discountPercentage,name}}:ProductInfoProps) => {
+const ProductInfo = ({product}:ProductInfoProps) => {
 
     const [quantity,setQuantity] = useState(1)
 
@@ -31,22 +26,28 @@ const ProductInfo = ({product:{basePrice,totalPrice,description,discountPercenta
         setQuantity(prev =>  prev + 1)
     }
 
+    const {addProductsToCart} = useContext(CartContext)
+
+    const handleAddToCartClick = () =>{
+        addProductsToCart({...product,quantity})
+    }
+
     return ( 
         <div className="flex flex-col px-5">
-            <h2 className="text-lg">{name}</h2>
+            <h2 className="text-lg">{product.name}</h2>
 
             <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold">R$ {totalPrice.toFixed(2)}</h1>
-                {discountPercentage > 0 && (
+                <h1 className="text-xl font-bold">R$ {product.totalPrice.toFixed(2)}</h1>
+                {product.discountPercentage > 0 && (
                 <DiscountBadge className="px-2 py-[2px]">
-                    {discountPercentage}
+                    {product.discountPercentage}
                  </DiscountBadge>
                 )}
             </div>
 
-            {discountPercentage > 0 &&(
+            {product.discountPercentage > 0 &&(
                 <p className="text-sm opacity-75 line-through">
-                    R$ {Number(basePrice).toFixed(2)}
+                    R$ {Number(product.basePrice).toFixed(2)}
                 </p>
             
             )}
@@ -66,10 +67,12 @@ const ProductInfo = ({product:{basePrice,totalPrice,description,discountPercenta
 
             <div className="flex flex-col gap-3 mt-8">
                 <h3 className="font-bold ">Descrição</h3>
-                <p className="text-justify opacity-60 text-sm">{description}</p>
+                <p className="text-justify opacity-60 text-sm">{product.description}</p>
             </div>
 
-            <Button className="mt-8 uppercase font-bold">Adicionar ao carrinho</Button>
+            <Button onClick={handleAddToCartClick} className="mt-8 uppercase font-bold"
+            >Adicionar ao carrinho
+            </Button>
 
             <div className="bg-accent flex items-center px-5 py-2 justify-between mt-5 rounded-lg">
                 <div className="flex items-center gap-2">
