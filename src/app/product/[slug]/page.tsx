@@ -3,6 +3,7 @@ import ProductImages from "./components/product-images";
 import ProductInfo from "./components/product-info";
 import { computProductTotalPrice } from "@/helpers/product";
 import ProductList from "@/components/ui/product-list";
+import SectionTitle from "@/components/ui/section-title";
 
 
 interface ProductDetailsPageProps {
@@ -41,8 +42,13 @@ const ProductDetailsPage = async ({params: {slug}}: ProductDetailsPageProps) => 
     return <div className="flex flex-col gap-8 pb-8">
         <ProductImages  name={product.name} imageUrls={product.imageUrls}/>
         <ProductInfo product={computProductTotalPrice(product)}/>
+
+
+    <div>
+        <SectionTitle>Produtos Recomendados</SectionTitle>
         {/* // aqui eu passei so os produtos da categoria do slug  menos o slug da url*/}
         <ProductList products={product.category.products}/>
+    </div>
     </div>
 }
  
