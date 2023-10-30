@@ -19,6 +19,7 @@ interface ICartContext {
     addProductsToCart: (product: CartProduct) => void
     decreaseProductQuantity: (product: string) => void
     increaseProductQuantity: (product: string) => void
+    removeProductFromCart: (product: string) => void
  }
 
 // O valor inicial do contexto é fornecido como um objeto que segue o formato da interface ICartContext
@@ -30,7 +31,8 @@ export const CartContext = createContext<ICartContext>({
     // funções inicia como valor vazio que não retorna nada
     addProductsToCart : () => {},
     decreaseProductQuantity: () => {},
-    increaseProductQuantity: () => {}
+    increaseProductQuantity: () => {},
+    removeProductFromCart: () => {}
 })
 
 const CartProvider = ({children} : {children : ReactNode}) => {
@@ -85,7 +87,6 @@ const CartProvider = ({children} : {children : ReactNode}) => {
     }
     const increaseProductQuantity = (productId: string) =>{
 
-
         setProducts(
             prev => prev.map(cartProduct => {
                 if(cartProduct.id === productId){
@@ -101,12 +102,18 @@ const CartProvider = ({children} : {children : ReactNode}) => {
         )
     }
 
+
+    const removeProductFromCart = (productId: string) =>{
+       setProducts(prev => prev.filter(cartProduct => cartProduct.id !== productId))
+    }
+
     return (  
         <CartContext.Provider value={{
             products,
             addProductsToCart,
             decreaseProductQuantity,
             increaseProductQuantity,
+            removeProductFromCart,
             cartTotalPrice: 0,
             cartBasePrice: 0,
              cartTotalDiscount : 0,
