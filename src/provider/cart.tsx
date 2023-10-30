@@ -1,9 +1,10 @@
 "use client"
 
+import { ProductwhitTotalPrice } from "@/helpers/product";
 import { Product } from "@prisma/client";
 import { ReactNode, createContext, useState } from "react";
 
-interface CartProduct extends Product{
+export interface CartProduct extends ProductwhitTotalPrice{
     quantity: number
 }
 
@@ -28,7 +29,32 @@ const CartProvider = ({children} : {children : ReactNode}) => {
 
     const [products,setProducts] = useState<CartProduct[]>([])
 
+
+    
+
     const addProductsToCart = (product: CartProduct) =>{
+
+        const productIsAlreadyOnCart = products.some(carProduct => carProduct.id === product.id)
+
+        if(productIsAlreadyOnCart){
+            setProducts((prev) => 
+                prev.map((carProduct) =>{
+                    if(carProduct.id === product.id){
+                        return{
+                            ...carProduct,
+                            quantity:carProduct.quantity + product.quantity
+                        }
+                    }
+
+                    return carProduct
+                })
+            )
+
+            return;
+        }
+
+
+
         setProducts(prev => [...prev,product])  
     }
 
