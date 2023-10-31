@@ -50,13 +50,13 @@ const CartProvider = ({children} : {children : ReactNode}) => {
     // o acc é o acumulador do valor e é passado o 0 como valor inicial e ele soma todos os basePrice 
     const subTotal = useMemo(() =>{
         return products.reduce((acc,product) =>{
-            return acc + Number(product.basePrice)
+            return acc + Number(product.basePrice) * product.quantity
         },0)
     }, [products])
     
     const total = useMemo(() =>{
         return products.reduce ((acc,product) =>{
-            return acc + product.totalPrice
+            return acc + product.totalPrice * product.quantity
         },0)
     },[products])
 
