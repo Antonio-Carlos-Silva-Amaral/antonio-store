@@ -2,7 +2,7 @@
 
 import { ProductwhitTotalPrice } from "@/helpers/product";
 import { Product } from "@prisma/client";
-import { ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useMemo, useState } from "react";
 
 export interface CartProduct extends ProductwhitTotalPrice{
     quantity: number
@@ -15,6 +15,9 @@ interface ICartContext {
     cartTotalPrice: number
     cartBasePrice: number
     cartTotalDiscount : number 
+    total:number
+    subTotal:number
+    totalDiscount: number
     // esse void quer dizer que ela nao retorna nenhum valor e como eu tivesse posto como any
     addProductsToCart: (product: CartProduct) => void
     decreaseProductQuantity: (product: string) => void
@@ -28,6 +31,9 @@ export const CartContext = createContext<ICartContext>({
     cartTotalPrice: 0,
     cartBasePrice: 0,
     cartTotalDiscount : 0,
+    total:0,
+    subTotal:0,
+    totalDiscount:0,
     // funções inicia como valor vazio que não retorna nada
     addProductsToCart : () => {},
     decreaseProductQuantity: () => {},
@@ -39,8 +45,23 @@ const CartProvider = ({children} : {children : ReactNode}) => {
 
     const [products,setProducts] = useState<CartProduct[]>([])
 
-
+    // aqui nessa função ela é usado um hook do react e e passado products como parametro par quando ele for modificado vai ser recalculado
+    // ele usa o reduce que itera sobre todos o produtos que transforma o array em um unico valor 
+    // o acc é o acumulador do valor e é passado o 0 como valor inicial e ele soma todos os basePrice 
+    const subTotal = useMemo(() =>{
+        return products.reduce((acc,product) =>{
+            return acc + Number(product.basePrice)
+        },0)
+    }, [products])
     
+    const total = useMemo(() =>{
+        return products.reduce ((acc,product) =>{
+            return acc + product.totalPrice
+        },0)
+    },[products])
+
+    const totalDiscount =  subTotal - total
+
 
     const addProductsToCart = (product: CartProduct) =>{
 
@@ -114,6 +135,9 @@ const CartProvider = ({children} : {children : ReactNode}) => {
             decreaseProductQuantity,
             increaseProductQuantity,
             removeProductFromCart,
+            total,
+            subTotal,
+            totalDiscount,
             cartTotalPrice: 0,
             cartBasePrice: 0,
              cartTotalDiscount : 0,
