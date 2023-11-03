@@ -20,9 +20,9 @@ export const createCheckout = async (products: CartProduct[]) =>{
             //  Define o modo da sessão de checkout. No seu código, está configurado como 'payment', o que indica que se trata de um pagamento direto.
             mode: 'payment',
             // url pra que o cliente vai ser redirecionado se o pagamento foi um sucesso 
-            success_url: 'http://localhost:3000',
+            success_url: process.env.HOST_URLS,
             // caso der erro vai para esta url
-            cancel_url: 'http://localhost:3000',
+            cancel_url: process.env.HOST_URLS,
             line_items: products.map(product =>{
                 return {
                     price_data:{
