@@ -1,70 +1,44 @@
-import { prismaClient } from "@/lib/prisma"
-import { NextResponse } from "next/server"
-import Stripe from "stripe"
+import { prismaClient } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import crypto from 'crypto';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY,{
-    apiVersion: "2023-10-16"
-})
+export const POST = async (request: Request) => {
+  const stripeSignature = request.headers.get('stripe-signature');
 
-export const POST = async (request: Request) =>{
-    // esse ! dis que sempre vai haver uma signature
-    const signature = request.headers.get('stripe-signature')!
-   
+  if (!stripeSignature) {
+    return NextResponse.error();
+  }
 
-    if(!signature){
-        return NextResponse.error()
-    }
+  const secret = process.env.STRIPE_WEBHOOK_SECRET_KEY;
 
-    const text = await request.text()
+  const payload = await request.text();
 
-    
-    const event = stripe.webhooks.constructEvent(
-        text,
-        signature,
-        process.env.STRIPE_WEBHOOK_SECRET_KEY,
-        
-      );
-    
+  const hash = crypto.createHmac('sha256', secret)
+                     .update(payload)
+                     .digest('hex');
 
-        // com esse ckeckout eu consigo tratar qualquer evento tipo quando o pagamento nao for valido 
+  const isSignatureValid = stripeSignature === `t=${Date.now()},v1=${hash}`;
 
-        
-    if(event.type === "checkout.session.completed"){
-      const session = event.data.object as any
+  if (!isSignatureValid) {
+    return NextResponse.error();
+  }
 
-      console.log({meta: session.metadata})
-        const sessionWithLineItems = await stripe.checkout.sessions.retrieve(
-            event.data.object.id,
-            {
-              expand: ['line_items'],
-            }
-          );
-          const lineItems = sessionWithLineItems.line_items;
-          // apartir daqui criar o pedido 
-            console.log("teste:",lineItems)
-          await prismaClient.order.update({
-            where: {
-              id: session.metadata.orderId,
-            },
-            data: {
-              status: "PAYMENT_CONFIRMED",
-            },
-          });
+  // Continue process the webhook payload
+  const event = JSON.parse(payload);
 
-        
-    }
-    
-  
+  if (event.type === 'checkout.session.completed') {
+    // Handle your logic for checkout session completed
+    const session = event.data.object as any;
 
-    return new Response(JSON.stringify({ received: true }), {
-      status: 200, // Código de status HTTP
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    console.log({ meta: session.metadata });
 
-    // agente usa o stripe secret key, usa o signature, e o stripe webhook secret key para verificar
-    // se o evento realmente existe 
+    // ... rest of your logic
+  }
 
-
-}
+  return new Response(JSON.stringify({ received: true }), {
+    status: 200, // Código de status HTTP
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
