@@ -43,15 +43,20 @@ export const CartContext = createContext<ICartContext>({
 
 const CartProvider = ({children} : {children : ReactNode}) => {
 
-    const [products,setProducts] = useState<CartProduct[]>(
-        // ele pega do localStorage e receber em formato json porque no carrinho ta como string
-        JSON.parse(localStorage.getItem("@antonio-store/cart-products")|| "[]")
-    )
+    const storedProducts = typeof window !== 'undefined'
+    ?
+    // ele pega do localStorage e receber em formato json porque no carrinho ta como string 
+    JSON.parse(localStorage.getItem('@antonio-store/cart-products') || '[]')
+    : [];
+
+    const [products,setProducts] = useState<CartProduct[]>(storedProducts)
 
 
     useEffect(() =>{
         // vai ser salva no localStorage como JSON e como string
-        localStorage.setItem("@antonio-store/cart-products", JSON.stringify(products))
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('@antonio-store/cart-products', JSON.stringify(products));
+          }
     },[products])
 
     // aqui nessa função ela é usado um hook do react e e passado products como parametro par quando ele for modificado vai ser recalculado
