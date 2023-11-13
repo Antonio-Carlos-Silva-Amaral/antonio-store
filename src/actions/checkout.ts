@@ -3,7 +3,10 @@
 import { CartProduct } from "@/provider/cart"
 import Stripe from  'stripe'
 
-export const createCheckout = async (products: CartProduct[]) =>{
+export const createCheckout = async (
+    products: CartProduct[],
+    orderId: string
+    ) =>{
     // CRIAR CHECKOUT
     // estou importando a biblioteca do stripe e criando uma nova instância ela inicia o objeto stripe com dois parâmetros um
     // a chave secreta do stripe e o outro parametro a versão da api que estou utilizando 
@@ -23,6 +26,9 @@ export const createCheckout = async (products: CartProduct[]) =>{
             success_url: process.env.HOST_URLS,
             // caso der erro vai para esta url
             cancel_url: process.env.HOST_URLS,
+            metadata:{
+                orderId
+            },
             line_items: products.map(product =>{
                 return {
                     price_data:{

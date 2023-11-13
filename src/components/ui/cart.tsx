@@ -10,22 +10,34 @@ import { Button } from "./button";
 import { createCheckout } from "@/actions/checkout";
 import { loadStripe } from '@stripe/stripe-js';
 
+import { useSession } from "next-auth/react";
+import { createOrder } from "@/actions/order";
+
 
 const Cart = () => {
 
     const {products,subTotal,total,totalDiscount} = useContext(CartContext)
 
-    const handleFinishPurchaseClick = async () =>{
-     const checkout = await createCheckout(products)
+    const {data} = useSession()
 
-     const stripe = await loadStripe(
-        process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY
-     )
-
-     stripe?.redirectToCheckout({
-        sessionId: checkout.id
-     })  
-    }
+    const handleFinishPurchaseClick = async () => {
+        if (!data?.user) {
+          // TODO: redirecionar para o login
+          return;
+        }
+    
+        const order = await createOrder(products, (data?.user as any).id);
+    
+        const checkout = await createCheckout(products, order.id);
+    
+        const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+    
+        // Criar pedido no banco
+    
+        stripe?.redirectToCheckout({
+          sessionId: checkout.id,
+        });
+      };
 
     return ( 
         <div className="flex flex-col gap-8 h-full">
