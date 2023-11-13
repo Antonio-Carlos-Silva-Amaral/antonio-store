@@ -41,7 +41,7 @@ export const POST = async (request: Request) =>{
           );
           const lineItems = sessionWithLineItems.line_items;
           // apartir daqui criar o pedido 
-            console.log(lineItems)
+            console.log("teste:",lineItems)
           await prismaClient.order.update({
             where: {
               id: session.metadata.orderId,
