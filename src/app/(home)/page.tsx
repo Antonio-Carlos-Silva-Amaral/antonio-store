@@ -94,9 +94,8 @@ export default async function Home() {
               <div className="px-5 lg:hidden">
                 <Link href="/category/headphones">
                   <PromoBanner
-                    src="/banner-home-03.png"
+                    src="/Banner-home-03.png"
                     alt="Até 55% de desconto em mouses!"
-                    
                   />
                 </Link>
               </div>
