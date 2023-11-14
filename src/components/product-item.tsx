@@ -4,15 +4,18 @@ import { Badge } from "./ui/badge";
 import { ArrowDownIcon } from "lucide-react";
 import Link from "next/link";
 import DiscountBadge from "./ui/discount-badge";
+import { cn } from "@/lib/utils";
 
 // aqui agente ta usando já com o total price
 interface ProductItemProps{
     product: ProductwhitTotalPrice
+    className?: string;
 }
 
-const ProductItem = ({product} : ProductItemProps) => {
+const ProductItem = ({product,className} : ProductItemProps) => {
     return (
-        <Link href={`/product/${product.slug}`}>
+        <Link href={`/product/${product.slug}`}
+        className={cn("flex min-w-[156px] flex-col gap-4", className)}>
             <div className="flex flex-col gap-4">
                 <div className="relative bg-accent rounded-lg h-[170px] w-full flex items-center justify-center">
                     <Image
