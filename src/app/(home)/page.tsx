@@ -76,7 +76,7 @@ export default async function Home() {
                   />
               </Link>
 
-              <Link href="/category/headpones" className="flex flex-1">
+              <Link href="/category/headphones" className="flex flex-1">
                 <PromoBanner
                     src="/Banner-home-03.png"
                     alt="Até 55% de desconto em mouses!"
