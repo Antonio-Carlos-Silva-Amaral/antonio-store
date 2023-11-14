@@ -2,13 +2,13 @@
 Este é um  e-commerce desenvolvido durante a Full Stack Week, em evento de bastante aprendizado.
 
 # TECNOLOGIAS
-**React**:
-**Next.js 13**
-**Next Auth**
- **Postgres**
-**Prisma**
-**shadcn/ui**
-**Tailwind CSS**
+**React**,
+**Next.js 13**,
+**Next Auth**,
+ **Postgres**,
+**Prisma**,
+**shadcn/ui**,
+**Tailwind CSS**,
 **API do Stripe**
 
 # FUNCIONALIDADES 
